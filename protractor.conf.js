@@ -12,7 +12,7 @@ exports.config = {
     'browserName': 'chrome'
   },
   directConnect: true,
-  baseUrl: '/',
+  baseUrl: 'https://codesource.herokuapp.com/',
   framework: 'jasmine',
   jasmineNodeOpts: {
     showColors: true,
