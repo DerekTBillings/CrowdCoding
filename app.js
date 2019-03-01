@@ -1,19 +1,30 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var bodyParser = require('body-parser');
+const express = require('express');
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const bodyParser = require('body-parser');
 const routes = require('express').Router();
-
-var book = require('./routes/book');
-var app = express();
+const uuid = require('uuid/v4');
+const loginService = require('./src/app/server/services/loginService');
+const app = express();
+const session = require('express-session');
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({'extended':'false'}));
 app.use(express.static(path.join(__dirname, 'dist')));
-//app.use('/books', express.static(path.join(__dirname, 'dist')));
-//app.use('/book', book);
+app.use(session({
+  genid: function(req) {return uuid()},
+  secret: 'applesauce',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    secure: true,
+    maxAge: 60000
+  }
+}));
+
+app.use('/services/login', loginService);
 
 routes.get('*', function (req, res) {
   res.sendFile(path.join(__dirname + '/dist/index.html'));
@@ -38,10 +49,3 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
-
-
-//const routes = require('express').Router();
-//
-//routes.get('*', function (req, res) {
-//  res.sendFile(path.join(__dirname + '/dist/index.html'));
-//});

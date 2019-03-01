@@ -5,7 +5,7 @@ import {tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
 
 const httpOptions = {headers: new HttpHeaders({ 'Content-Type':  'application/json', 'port': 'process.env.PORT' || '3000' })};
-const LOGIN_SERVICE_URL = '/services/login';
+const LOGIN_SERVICE_URL = '/services/login/';
 
 @Component({
   selector: 'app-login',
