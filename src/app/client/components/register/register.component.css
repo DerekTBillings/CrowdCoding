@@ -1,0 +1,22 @@
+.content {
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+}
+
+button, a {
+  float: right;
+  margin-left: 1em;
+}
+
+.right {
+  float: right;
+}
+
+.error {
+  border: 1px solid red;
+}
+
+.good {
+  border: 1px solid green;
+}

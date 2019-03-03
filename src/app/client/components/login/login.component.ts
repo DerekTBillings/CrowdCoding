@@ -1,11 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Observable, of} from 'rxjs';
-import {tap} from 'rxjs/operators';
+import {Component, Input, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
+import {HttpHelper} from '../../utils/HttpHelper';
 
-const httpOptions = {headers: new HttpHeaders({ 'Content-Type':  'application/json', 'port': 'process.env.PORT' || '3000' })};
 const LOGIN_SERVICE_URL = '/services/login/';
+const INVALID_USER_PASS = 'Either the username or password was invalid!';
 
 @Component({
   selector: 'app-login',
@@ -14,44 +12,47 @@ const LOGIN_SERVICE_URL = '/services/login/';
 })
 export class LoginComponent implements OnInit {
 
+  @Input() username: string;
+  @Input() password: string;
+
   errorMessage: string;
 
-  constructor(private http: HttpClient,
+  constructor(private httpHelper: HttpHelper,
               private router: Router) { }
 
   ngOnInit() { }
 
-  login(name: string, pass: string): void {
-    this.errorMessage = '';
-    const params = {
-      username: name,
-      password: pass
-    };
+  login(): void {
+    const isValid = this.validate();
 
-    this.http.post<any>(LOGIN_SERVICE_URL, params, httpOptions)
-      .pipe(
-        tap( // Log the result or error
-          data => console.log(data),
-          error => this.handleError('error', error)
-        ))
-      .subscribe(res => {
+    this.errorMessage = (isValid) ? '' : INVALID_USER_PASS;
+
+    if (isValid) {
+      this.httpHelper.post(LOGIN_SERVICE_URL, this.getParams()).subscribe(res => {
         const success = res.success;
+        this.password = '';
 
         if (!success || success === 'false') {
-          this.errorMessage = 'Either the username or password was invalid!';
+          this.errorMessage = INVALID_USER_PASS;
         } else {
           this.router.navigate(['/projects']);
         }
       });
+    }
   }
 
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-      console.error(error);
-      console.log(`${operation} failed: ${error.message}`);
+  validate(): boolean {
+    if (this.username && this.password) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-      // Let the app keep running by returning an empty result.
-      return of(result as T);
+  getParams(): any {
+    return {
+      username: this.username,
+      password: this.password
     };
   }
 

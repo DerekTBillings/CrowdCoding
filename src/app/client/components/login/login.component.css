@@ -7,3 +7,11 @@
 .right {
   float: right;
 }
+
+.error {
+  border: 1px solid red;
+}
+
+.good {
+  border: 1px solid green;
+}

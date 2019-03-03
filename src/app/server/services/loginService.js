@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const LoginDao = require('../dao/LoginDao');
 const encrypt = require('md5');
+const dao = new LoginDao();
 
 router.post('/', (req, res) => {
   let username = req.body.username;
@@ -9,12 +10,15 @@ router.post('/', (req, res) => {
 
   if (username !== undefined && password !== undefined) {
     password = encrypt(password);
-    getDao().getUserId(username, password, (errors, data) => {
+
+    dao.getUserId(username, password, (errors, data) => {
       let loggedIn = false;
+
       if (!errors && data.length > 0) {
         req.session.userId = data[0]['user_id'];
         loggedIn = true;
       }
+
       res.send({success: loggedIn});
     });
   } else {
@@ -22,25 +26,15 @@ router.post('/', (req, res) => {
   }
 });
 
-router.get('/query', (req, res) => {
-  console.log('begin');
-  let dao = getDao();
-  let users = dao.getUsers((err, data) => {
-    console.log('errors:');
-    console.log(err);
-    console.log('data');
-    console.log(data);
-    res.send('done');
-  });
-});
+router.get('/status', (req, res) => {
+  let isLoggedIn = false;
 
-function getDao() {
-  if (this.dao === undefined) {
-    this.dao = new LoginDao();
+  if (req.session != undefined && req.session.userId != undefined) {
+    isLoggedIn = true;
   }
 
-  return this.dao;
-}
+  res.send({loggedIn: isLoggedIn});
+});
 
 module.exports = router;
 

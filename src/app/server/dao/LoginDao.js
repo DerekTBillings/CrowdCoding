@@ -13,9 +13,5 @@ class LoginDao {
     this._baseDao.query(LoginSql.getUserId, callback, params);
   }
 
-  getUsers(callback) {
-    this._baseDao.query(LoginSql.getAllUsersSql, callback);
-  }
-
 }
 module.exports = LoginDao;

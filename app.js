@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const routes = require('express').Router();
 const uuid = require('uuid/v4');
 const loginService = require('./src/app/server/services/loginService');
+const registrationService = require('./src/app/server/services/registrationService');
 const app = express();
 const session = require('express-session');
 
@@ -25,9 +26,10 @@ app.use(session({
 }));
 
 app.use('/services/login', loginService);
+app.use('/services/registration', registrationService);
 
-routes.get('*', function (req, res) {
-  res.sendFile(path.join(__dirname + '/dist/index.html'));
+app.get('*', function (req, res) {
+  res.sendfile('./dist/index.html');
 });
 
 // catch 404 and forward to error handler
