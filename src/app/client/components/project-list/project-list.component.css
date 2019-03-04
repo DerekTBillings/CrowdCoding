@@ -1,0 +1,18 @@
+.content {
+  width: 90%;
+  margin: auto;
+}
+
+.listWrapper {
+  width: 90%;
+  overflow: auto;
+  margin: auto;
+}
+
+li {
+  list-style: none;
+}
+
+.right {
+  float: right;
+}

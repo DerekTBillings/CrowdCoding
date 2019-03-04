@@ -15,7 +15,6 @@ const LOGIN_SERVICE_URL = '/services/login/';
 })
 export class RegisterComponent implements OnInit {
 
-
   @Input() firstName: String;
   @Input() lastName: String;
   @Input() phoneNumber: String;

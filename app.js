@@ -7,6 +7,7 @@ const routes = require('express').Router();
 const uuid = require('uuid/v4');
 const loginService = require('./src/app/server/services/loginService');
 const registrationService = require('./src/app/server/services/registrationService');
+const projectService = require('./src/app/server/services/projectService');
 const app = express();
 const session = require('express-session');
 
@@ -27,6 +28,7 @@ app.use(session({
 
 app.use('/services/login', loginService);
 app.use('/services/registration', registrationService);
+app.use('/services/project', projectService);
 
 app.get('*', function (req, res) {
   res.sendfile('./dist/index.html');
