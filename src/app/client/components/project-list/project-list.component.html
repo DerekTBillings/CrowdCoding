@@ -42,8 +42,8 @@
         </tr>
       </tbody>
     </table>
-    <div class="right">
-
+    <div class="right flex-row">
+      <button *ngFor="let n of pages" (click)="loadProjects(n)" class="btn btn-primary">{{n}}</button>
     </div>
   </div>
 </div>

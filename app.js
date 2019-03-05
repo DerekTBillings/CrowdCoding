@@ -9,23 +9,22 @@ const loginService = require('./src/app/server/services/loginService');
 const registrationService = require('./src/app/server/services/registrationService');
 const projectService = require('./src/app/server/services/projectService');
 const app = express();
-const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
+var Keygrip = require('keygrip');
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({'extended':'false'}));
 app.use(express.static(path.join(__dirname, 'dist')));
-app.use(session({
-  genid: function(req) {return uuid()},
-  secret: 'applesauce',
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    secure: true,
-    maxAge: 60000
-  }
-}));
 
+app.use(cookieSession({
+  name: 'session',
+  keys: new Keygrip(['key1', 'key2'], 'SHA384', 'base64'),
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
+
+app.use(cookieParser());
 app.use('/services/login', loginService);
 app.use('/services/registration', registrationService);
 app.use('/services/project', projectService);

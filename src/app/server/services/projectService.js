@@ -15,21 +15,32 @@ router.get('/', (req, res) => {
   rowEnd = (rowEnd) ? +rowEnd : 50;
 
   dao.getProjects(userId, rowStart, rowEnd, (errors, data) => {
+    data.forEach(row => {
+      row.tools = cleanupArray(row.tools);
+      row.needs = cleanupArray(row.needs);
+      row.applied = (row.applied == 0) ? false : true;
+    });
+
     res.send({projects: data});
-    console.log(errors);
-    console.log(data);
   });
 });
 
+function cleanupArray(str) {
+  if (str == undefined || str == '' || str == 'NULL') {
+    return [];
+  }
 
+  str = str.replace(/['"]/g, '');
+  return str.split(',');
+}
 
 router.get('/getProjectCount', (req, res) => {
   dao.getProjectCount((errors, data) => {
-    res.send({projectCount: data.projectCount});
+    res.send({projectCount: data[0]['count']});
   });
 });
 
-router.post('/', (req, res) => {
+router.post('/apply', (req, res) => {
   let session = req.session;
   let projectId = req.body.projectId;
 
@@ -37,9 +48,8 @@ router.post('/', (req, res) => {
     res.send({success: false});
   } else {
     let userId = session.userId;
-    let projectId = req.projectId;
 
-    dao.apply(userId, (errors, data) => {
+    dao.apply(userId, projectId, (errors, data) => {
       if (!errors) {
         res.send({success: true});
       } else {

@@ -5,6 +5,7 @@ import {Router} from '@angular/router';
 
 const PROJECT_SERVICE_URL = '/services/project';
 const PROJECT_COUNT_URL = PROJECT_SERVICE_URL + '/getProjectCount';
+const PROJECT_APPLY_URL = PROJECT_SERVICE_URL + '/apply';
 
 const LOGGED_IN_SERVICE_URL = '/services/login/status';
 
@@ -18,17 +19,25 @@ export class ProjectListComponent implements OnInit {
   projects: Project[];
   projectCount: number;
   projectsPerPage = 5;
+  pages = [1];
 
   constructor(private httpHelper: HttpHelper,
               private router: Router) { }
 
   ngOnInit() {
     this.loadProjects(1);
+    this.initPagination();
   }
 
-  getProjectCount() {
+  initPagination() {
     this.httpHelper.get(PROJECT_COUNT_URL).subscribe(res => {
       this.projectCount = res.projectCount;
+
+      const maxPage = this.projectCount / this.projectsPerPage;
+      this.pages = [];
+      for (let i = 0; i < maxPage; i++) {
+        this.pages.push(i + 1);
+      }
     });
   }
 
@@ -56,7 +65,7 @@ export class ProjectListComponent implements OnInit {
   processApply(projectId: number): void {
     const params = {projectId: projectId};
 
-    this.httpHelper.post(PROJECT_SERVICE_URL, params).subscribe(res => {
+    this.httpHelper.post(PROJECT_APPLY_URL, params).subscribe(res => {
       const success = res.success;
 
       if (success) {

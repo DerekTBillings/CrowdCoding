@@ -15,6 +15,7 @@ router.post('/', (req, res) => {
       let loggedIn = false;
 
       if (!errors && data.length > 0) {
+        console.log('userId: '+data[0]['user_id']);
         req.session.userId = data[0]['user_id'];
         loggedIn = true;
       }
@@ -33,7 +34,7 @@ router.get('/status', (req, res) => {
     isLoggedIn = true;
   }
 
-  res.send({loggedIn: isLoggedIn});
+  res.send({isLoggedIn: isLoggedIn});
 });
 
 module.exports = router;
