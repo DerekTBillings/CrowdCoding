@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import {HttpHelper} from '../../utils/HttpHelper';
+
+const LOGGED_IN_SERVICE_URL = '/services/login/status';
+const LOGOUT_SERVICE_URL = '/services/logout';
 
 @Component({
   selector: 'app-menu',
@@ -7,9 +11,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MenuComponent implements OnInit {
 
-  constructor() { }
+  isSignedIn = false;
+
+  constructor(private httpHelper: HttpHelper) { }
 
   ngOnInit() {
+    this.checkSignInStatus();
+  }
+
+  checkSignInStatus() {
+    this.httpHelper.get(LOGGED_IN_SERVICE_URL).subscribe(res => {
+      this.isSignedIn = res.isLoggedIn;
+    });
+  }
+
+  signOut() {
+    this.httpHelper.get(LOGOUT_SERVICE_URL).subscribe(res => {
+      this.isSignedIn = false;
+    });
   }
 
 }

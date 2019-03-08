@@ -3,6 +3,10 @@
   margin: auto;
 }
 
+div.card {
+  margin-top: 10px;
+}
+
 .listWrapper {
   width: 90%;
   overflow: auto;

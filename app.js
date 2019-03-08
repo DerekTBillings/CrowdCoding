@@ -5,9 +5,12 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const routes = require('express').Router();
 const uuid = require('uuid/v4');
+
 const loginService = require('./src/app/server/services/loginService');
 const registrationService = require('./src/app/server/services/registrationService');
 const projectService = require('./src/app/server/services/projectService');
+const logoutService = require('./src/app/server/services/logoutService');
+
 const app = express();
 const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
@@ -28,6 +31,7 @@ app.use(cookieParser());
 app.use('/services/login', loginService);
 app.use('/services/registration', registrationService);
 app.use('/services/project', projectService);
+app.use('/services/logout', logoutService);
 
 app.get('*', function (req, res) {
   res.sendfile('./dist/index.html');

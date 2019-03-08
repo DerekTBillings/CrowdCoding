@@ -18,7 +18,7 @@ export class ProjectListComponent implements OnInit {
 
   projects: Project[];
   projectCount: number;
-  projectsPerPage = 5;
+  projectsPerPage = 3;
   pages = [1];
 
   constructor(private httpHelper: HttpHelper,
