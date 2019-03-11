@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {Project} from '../../models/Project';
 import {HttpHelper} from '../../utils/HttpHelper';
 import {Router} from '@angular/router';
@@ -16,39 +16,28 @@ const LOGGED_IN_SERVICE_URL = '/services/login/status';
 })
 export class ProjectListComponent implements OnInit {
 
-  projects: Project[];
-  projectCount: number;
-  projectsPerPage = 3;
-  pages = [1];
+  projects: Project[] = [];
+  projectsPerPage = 10;
+  currentPage = 0;
 
   constructor(private httpHelper: HttpHelper,
               private router: Router) { }
 
   ngOnInit() {
-    this.loadProjects(1);
-    this.initPagination();
+    this.loadProjects();
   }
 
-  initPagination() {
-    this.httpHelper.get(PROJECT_COUNT_URL).subscribe(res => {
-      this.projectCount = res.projectCount;
+  loadProjects(): void {
+    const page = ++this.currentPage;
 
-      const maxPage = this.projectCount / this.projectsPerPage;
-      this.pages = [];
-      for (let i = 0; i < maxPage; i++) {
-        this.pages.push(i + 1);
-      }
-    });
-  }
-
-  loadProjects(page: number): void {
     const rowStart = (page - 1) * this.projectsPerPage;
     const rowEnd = page * this.projectsPerPage;
 
     const url = PROJECT_SERVICE_URL + `?rowStart=${rowStart}&rowEnd=${rowEnd}`;
 
     this.httpHelper.get(url).subscribe(res => {
-      this.projects = res.projects;
+      this.onResize();
+      res.projects.forEach(project => this.projects.push(project));
     });
   }
 
@@ -76,6 +65,28 @@ export class ProjectListComponent implements OnInit {
         }
       }
     });
+  }
+
+  onScroll(event: Event): void {
+    const distanceFromTop = event.target['scrollTop'];
+    const scrollBarHeight = event.target['offsetHeight'];
+    const combinedHeight = distanceFromTop + scrollBarHeight;
+
+    const scrollHeight = event.target['scrollHeight'];
+    const dataLoadTrigger = scrollHeight * 3 / 4;
+
+    if (combinedHeight >= dataLoadTrigger) {
+      this.loadProjects();
+    }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event?) {
+    const screenHeight = window.innerHeight;
+    const targetHeight = screenHeight * 9 / 10;
+
+    const scrollBox = document.getElementById('scrollBox');
+    scrollBox.style.height = targetHeight + 'px';
   }
 
 }

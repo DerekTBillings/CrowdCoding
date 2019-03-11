@@ -1,5 +1,6 @@
 .content {
   width: 90%;
+  height: 90%;
   margin: auto;
 }
 
@@ -19,4 +20,9 @@ li {
 
 .right {
   float: right;
+}
+
+.scrollBox {
+  margin: auto;
+  overflow: auto;
 }

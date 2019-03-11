@@ -1,30 +1,34 @@
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
   <a class="navbar-brand" href="/">Code Source For Good</a>
 
-  <button class="navbar-toggler" type="button"  data-toggle="collapse" data-target="#navBar">
+  <button class="navbar-toggler" type="button"  data-toggle="collapse" data-target=".navBar">
     <span class="navbar-toggler-icon"></span>
   </button>
 
-  <div class="collapse navbar-collapse" id="navBar">
+  <div class="navbar-collapse collapse w-100 order-1 order-md-0 navBar">
     <ul class="navbar-nav">
-      <li class="nav-item" data-toggle="collapse" data-target="#navBar">
+      <li class="nav-item" data-toggle="collapse" data-target=".navBar">
         <a class="nav-link" routerLink="/projects">Projects</a>
       </li>
-      <li class="nav-item" data-toggle="collapse" data-target="#navBar">
+      <li class="nav-item" data-toggle="collapse" data-target=".navBar">
         <a class="nav-link" routerLink="/post">Post a Project</a>
       </li>
-      <li class="nav-item" data-toggle="collapse" data-target="#navBar">
+      <li class="nav-item" data-toggle="collapse" data-target=".navBar">
         <a class="nav-link" routerLink="/about">About</a>
       </li>
     </ul>
-    <ul class="navbar-nav navbar-right" data-toggle="collapse" data-target="#navBar">
-      <li class="nav-item" *ngIf="!isSignedIn">
+  </div>
+  <div class="navbar-collapse collapse w-100 order-3 navBar">
+    <ul class="navbar-nav ml-auto" data-toggle="collapse" data-target=".navBar" *ngIf="!isSignedIn" id="signedInOptions">
+      <li class="nav-item">
         <a class="nav-link" routerLink="/login">Login</a>
       </li>
-      <li class="nav-item" *ngIf="!isSignedIn" data-toggle="collapse" data-target="#navBar">
+      <li class="nav-item" *ngIf="!isSignedIn" data-toggle="collapse" data-target=".navBar">
         <a class="nav-link" routerLink="/register">Register</a>
       </li>
-      <li class="nav-item" *ngIf="isSignedIn" data-toggle="collapse" data-target="#navBar">
+    </ul>
+    <ul class="navbar-nav ml-auto" data-toggle="collapse" data-target=".navBar" *ngIf="isSignedIn" id="signOutOptions">
+      <li class="nav-item" data-toggle="collapse" data-target=".navBar">
         <a class="nav-link" routerLink="#" (click)="signOut()">Sign Out</a>
       </li>
     </ul>
