@@ -2,8 +2,10 @@
 
 # compiled output
 /dist
+/www
 /tmp
 /out-tsc
+/platforms
 
 # dependencies
 /node_modules

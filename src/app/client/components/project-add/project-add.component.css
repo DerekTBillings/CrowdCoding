@@ -1,0 +1,29 @@
+.content {
+  width: 100%;
+  max-width: 700px;
+  margin: auto;
+}
+
+.roundBtn {
+  border-radius: 50%;
+  color: white;
+}
+
+.right {
+  float: right;
+}
+
+.tableWrapper {
+  height: 5em;
+  overflow: auto;
+}
+
+.flex-row {
+  display: flex;
+}
+
+.full-width {
+  width: 100%;
+}
+
+

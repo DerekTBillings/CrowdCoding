@@ -19,7 +19,7 @@ var Keygrip = require('keygrip');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({'extended':'false'}));
-app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(path.join(__dirname, 'www')));
 
 app.use(cookieSession({
   name: 'session',
@@ -34,11 +34,14 @@ app.use('/services/project', projectService);
 app.use('/services/logout', logoutService);
 
 app.get('*', function (req, res) {
-  res.sendfile('./dist/index.html');
+  console.log('hit... ');
+  console.log(req);
+  res.sendfile('./www/index.html');
 });
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
+  console.log('404');
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
@@ -47,6 +50,7 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
+  console.log('error');
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
