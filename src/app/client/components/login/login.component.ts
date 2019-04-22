@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
+import {Location} from '@angular/common';
 import {HttpHelper} from '../../utils/HttpHelper';
 import {MenuComponent} from '../menu/menu.component';
 
@@ -20,7 +21,8 @@ export class LoginComponent implements OnInit {
   menuBar: MenuComponent;
 
   constructor(private httpHelper: HttpHelper,
-              private router: Router) { }
+              private router: Router,
+              private location: Location) { }
 
   ngOnInit() { }
 
@@ -37,7 +39,7 @@ export class LoginComponent implements OnInit {
         if (!success || success === 'false') {
           this.errorMessage = INVALID_USER_PASS;
         } else {
-          this.router.navigate(['/projects']);
+          this.location.back();
         }
       });
     }

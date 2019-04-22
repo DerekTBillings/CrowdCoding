@@ -44,20 +44,78 @@ router.post('/apply', (req, res) => {
   let session = req.session;
   let projectId = req.body.projectId;
 
-  if (session == undefined || session.userId == undefined || projectId == undefined) {
-    res.send({success: false});
+  if (!isSignedIn(session) || projectId == undefined) {
+    sendSuccessStatus(res, false);
   } else {
     let userId = session.userId;
 
     dao.apply(userId, projectId, (errors, data) => {
       if (!errors) {
-        res.send({success: true});
+        sendSuccessStatus(res, true);
       } else {
-        res.send({success: false});
+        sendSuccessStatus(res, false);
       }
     });
   }
 });
+
+function isSignedIn(session) {
+  return session != undefined && session.userId != undefined;
+}
+
+router.post("/", (req, res) => {
+  let session = req.session;
+
+  if (!isSignedIn(session)) {
+    sendSuccessStatus(res, "User isn't signed in.");
+  } else {
+    let projectDetails = collectProjectDetails(req);
+    let validationError = validate(projectDetails);
+
+    if (hasAValue(validationError)) {
+      sendSuccessStatus(res, validationError);
+    } else {
+      dao.addProject(projectDetails, (errors, data) => {
+        if (!errors) {
+          sendSuccessStatus(res, true);
+        } else {
+          sendSuccessStatus(res, false);
+        }
+      });
+    }
+  }
+});
+
+function collectProjectDetails(req) {
+  let params = req.body;
+
+  return {
+    name: params.name,
+    purpose: params.purpose,
+    website: params.website,
+    needs: params.needs,
+    tools: params.tools,
+    userId: req.session.userId
+  };
+}
+
+function validate(projectDetails) {
+  if (!hasAValue(projectDetails.name)) {
+    return 'A project name is required.';
+  } else if (!hasAValue(projectDetails.purpose)) {
+    return 'A project name is required.';
+  } else {
+    return '';
+  }
+}
+
+function hasAValue(str) {
+  return str !== undefined && str !== '';
+}
+
+function sendSuccessStatus(res, success, message) {
+  res.send({success: success, message: message});
+}
 
 module.exports = router;
 

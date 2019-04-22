@@ -1,5 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {Location} from '@angular/common';
+import {HttpHelper} from '../../utils/HttpHelper';
+import {Router} from '@angular/router';
+
+const PROJECT_SERVICE_URL = '/services/project';
+
+const LOGGED_IN_SERVICE_URL = '/services/login/status';
+
+const MISSING_REQUIRED_FIELDS = 'The follow are required fields: Name, Purpose';
 
 @Component({
   selector: 'app-project-add',
@@ -17,21 +25,76 @@ export class ProjectAddComponent implements OnInit {
   @Input('class') nameStyle: String;
   @Input('class') purposeStyle: String;
   @Input('class') websiteStyle: String;
-  @Input('class') newNeedStyle: String;
-  @Input('class') newToolStyle: String;
 
   needs: String[] = [];
   tools: String[] = [];
 
   errorMessage: string;
 
-  constructor(private location: Location) { }
+  constructor(private location: Location,
+              private httpHelper: HttpHelper,
+              private router: Router) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   save(): void {
+    this.httpHelper.get(LOGGED_IN_SERVICE_URL).subscribe(res => {
+      if (res.isLoggedIn) {
+        if (this.projectIsValid()) {
+          this.processSave();
+        }
+      } else {
+        this.router.navigate(['/login']);
+      }
+    });
+  }
 
+  projectIsValid(): boolean {
+    let isValid = true;
+    this.resetStyles();
+
+    if (!this.hasValue(this.name)) {
+      this.nameStyle = 'error';
+      isValid = false;
+    }
+
+    if (!this.hasValue(this.purpose)) {
+      this.purposeStyle = 'error';
+      isValid = false;
+    }
+
+    if (!isValid) {
+      this.errorMessage = MISSING_REQUIRED_FIELDS;
+    }
+
+    return isValid;
+  }
+
+  resetStyles(): void {
+    this.nameStyle = '';
+    this.purposeStyle = '';
+  }
+
+  processSave(): void {
+    const params = this.collectParams();
+
+    this.httpHelper.post(PROJECT_SERVICE_URL, params).subscribe(res => {
+      if (res.success) {
+        this.router.navigate(['/projects']);
+      } else {
+        this.errorMessage = 'An error occurred while saving the project';
+      }
+    });
+  }
+
+  collectParams(): {} {
+    return {
+      name: this.name,
+      purpose: this.purpose,
+      website: this.website,
+      needs: this.needs,
+      tools: this.tools
+    };
   }
 
   cancel(): void {
