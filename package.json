@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng build && node ./bin/www",
-    "build": "ng build && cordova build",
+    "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
