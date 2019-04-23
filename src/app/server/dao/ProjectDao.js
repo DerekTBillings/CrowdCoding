@@ -24,7 +24,7 @@ class RegistrationDao {
   }
 
   addProject(projectDetails, callback) {
-    const projectParams = this._toDetailsArray(projectDetails);
+    const projectParams = RegistrationDao._toDetailsArray(projectDetails);
 
     this._baseDao.query(ProjectSql.addProject, (errors, data) => {
       if (!errors) {
@@ -35,23 +35,23 @@ class RegistrationDao {
           let tools = projectDetails.tools;
           let needs = projectDetails.needs;
 
-          const toolsQuery = this._buildQuery(ProjectSql.addTools, tools.length);
-          const toolsParams = this._buildParams(projectId, tools);
+          const toolsQuery = RegistrationDao._buildQuery(ProjectSql.addTools, tools.length);
+          const toolsParams = RegistrationDao._buildParams(projectId, tools);
 
-          const needsQuery = this._buildQuery(ProjectSql.addNeeds, needs.length);
-          const needsParams = this._buildParams(projectId, tools);
+          const needsQuery = RegistrationDao._buildQuery(ProjectSql.addNeeds, needs.length);
+          const needsParams = RegistrationDao._buildParams(projectId, needs);
 
           if (tools.length > 0) {
-            this._baseDao.query(toolsQuery, (errors, data) => {}, toolsParams);
+            this._baseDao.query(toolsQuery, (errors, data) => { }, toolsParams);
           }
 
           if (needs.length > 0) {
-            this._baseDao.query(needsQuery, (errors, data) => {}, needsParams);
+            this._baseDao.query(needsQuery, (errors, data) => { }, needsParams);
           }
 
-          this.apply(projectDetails.userId, projectId, (errors, data) => {});
+          this.apply(projectDetails.userId, projectId, (errors, data) => { });
 
-          callback(null, null);
+          callback(errors, data);
         }, [projectDetails.name, projectDetails.purpose]);
       } else {
         callback(errors, null);
@@ -59,7 +59,7 @@ class RegistrationDao {
     }, [projectDetails.name, projectDetails.purpose, projectDetails.website]);
   }
 
-  _buildQuery(query, paramCount) {
+  static _buildQuery(query, paramCount) {
     for (let i=0; i<paramCount; i++) {
       if (i > 0) {
         query += ', ';
@@ -67,9 +67,11 @@ class RegistrationDao {
 
       query += ProjectSql.dynamicParams;
     }
+
+    return query;
   }
 
-  _buildParams(projectId, params) {
+  static _buildParams(projectId, params) {
     let mergedParams = [];
 
     for (let param of params) {
@@ -80,7 +82,7 @@ class RegistrationDao {
     return mergedParams;
   }
 
-  _toDetailsArray(projectDetails) {
+  static _toDetailsArray(projectDetails) {
     return [
       projectDetails.name,
       projectDetails.purpose,
