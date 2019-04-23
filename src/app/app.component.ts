@@ -1,7 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 
-declare var device;
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -9,9 +7,5 @@ declare var device;
 })
 export class AppComponent implements OnInit {
 
-  ngOnInit() {
-    document.addEventListener('deviceready', function() {
-      alert(device.platform);
-    }, false);
-  }
+  ngOnInit() { }
 }

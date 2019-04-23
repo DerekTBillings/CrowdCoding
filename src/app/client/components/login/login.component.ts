@@ -7,6 +7,8 @@ import {MenuComponent} from '../menu/menu.component';
 const LOGIN_SERVICE_URL = '/services/login/';
 const INVALID_USER_PASS = 'Either the username or password was invalid!';
 
+declare var device;
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -24,7 +26,11 @@ export class LoginComponent implements OnInit {
               private router: Router,
               private location: Location) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    document.addEventListener('deviceready', function() {
+      alert(device.platform);
+    }, false);
+  }
 
   login(): void {
     const isValid = this.validate();
