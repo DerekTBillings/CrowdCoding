@@ -28,35 +28,33 @@ class RegistrationDao {
 
     this._baseDao.query(ProjectSql.addProject, (errors, data) => {
       if (!errors) {
-        this._baseDao.query(ProjectSql.getProjectId, (errors, data) => {
-          const projectId = data[0].project_id;
-          console.log('ProjectId = ' + projectId);
-
-          let tools = projectDetails.tools;
-          let needs = projectDetails.needs;
-
-          const toolsQuery = RegistrationDao._buildQuery(ProjectSql.addTools, tools.length);
-          const toolsParams = RegistrationDao._buildParams(projectId, tools);
-
-          const needsQuery = RegistrationDao._buildQuery(ProjectSql.addNeeds, needs.length);
-          const needsParams = RegistrationDao._buildParams(projectId, needs);
-
-          if (tools.length > 0) {
-            this._baseDao.query(toolsQuery, (errors, data) => { }, toolsParams);
-          }
-
-          if (needs.length > 0) {
-            this._baseDao.query(needsQuery, (errors, data) => { }, needsParams);
-          }
-
-          this.apply(projectDetails.userId, projectId, (errors, data) => { });
-
-          callback(errors, data);
-        }, [projectDetails.name, projectDetails.purpose]);
+        this._addProjectDependencies(projectDetails, callback);
       } else {
         callback(errors, null);
       }
-    }, [projectDetails.name, projectDetails.purpose, projectDetails.website]);
+    }, projectParams);
+  }
+
+  _addProjectDependencies(projectDetails, callback) {
+    this._baseDao.query(ProjectSql.getProjectId, (errors, data) => {
+      const projectId = data[0].project_id;
+
+      this._addProjectDependency(projectId, ProjectSql.addTools, projectDetails.tools);
+      this._addProjectDependency(projectId, ProjectSql.addNeeds, projectDetails.needs);
+
+      this.apply(projectDetails.userId, projectId, this._emptyCallback());
+
+      callback(null, null);
+    }, [projectDetails.name, projectDetails.purpose]);
+  }
+
+  _addProjectDependency(projectId, sql, params) {
+    const builtQuery = this._buildQuery(sql, params.length);
+    const listedParams = this._buildParams(projectId, params);
+
+    if (tools.length > 0) {
+      this._baseDao.query(builtQuery, this._emptyCallback(), listedParams);
+    }
   }
 
   static _buildQuery(query, paramCount) {
@@ -82,7 +80,11 @@ class RegistrationDao {
     return mergedParams;
   }
 
-  static _toDetailsArray(projectDetails) {
+  _emptyCallback() {
+    return (errors, data) => {};
+  }
+
+  _toDetailsArray(projectDetails) {
     return [
       projectDetails.name,
       projectDetails.purpose,

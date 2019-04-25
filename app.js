@@ -33,15 +33,27 @@ app.use('/services/registration', registrationService);
 app.use('/services/project', projectService);
 app.use('/services/logout', logoutService);
 
+app.get('*cordova*.js', function (req, res) {
+  const filePath = path.join(__dirname, 'platforms', getPlatform(req), 'platform_www' + req.url);
+  console.log(filePath);
+  res.sendFile(filePath);
+});
+
+function getPlatform(req) {
+  var userAgent = req.headers['user-agent'];
+
+  if (/mobile/i.test(userAgent) || /Android/.test(userAgent))
+    return 'android';
+  else
+    return 'browser';
+}
+
 app.get('*', function (req, res) {
-  console.log('hit... ');
-  console.log(req);
-  res.sendfile('./www/index.html');
+  res.sendFile(__dirname + '/www/index.html');
 });
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  console.log('404');
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
@@ -50,7 +62,6 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
-  console.log('error');
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
