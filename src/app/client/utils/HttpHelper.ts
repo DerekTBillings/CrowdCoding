@@ -6,6 +6,9 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 const httpOptions = {headers: new HttpHeaders({ 'Content-Type':  'application/json'})};
 
+// const SERVICE_URL = 'http://localhost:4200';
+const SERVICE_URL = 'https://codesource.herokuapp.com';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -16,7 +19,7 @@ export class HttpHelper {
   constructor(private http: HttpClient) { }
 
   post(url: string, params: any): Observable<any> {
-    return this.http.post<any>(url, params, httpOptions)
+    return this.http.post<any>(SERVICE_URL + url, params, httpOptions)
       .pipe(
         tap( // Log the result or error
           data => console.log(data),
@@ -25,7 +28,7 @@ export class HttpHelper {
   }
 
   get(url: string): Observable<any> {
-    return this.http.get<any>(url, httpOptions)
+    return this.http.get<any>(SERVICE_URL + url, httpOptions)
       .pipe(
         tap( // Log the result or error
           data => console.log(data),

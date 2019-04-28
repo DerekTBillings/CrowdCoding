@@ -33,21 +33,6 @@ app.use('/services/registration', registrationService);
 app.use('/services/project', projectService);
 app.use('/services/logout', logoutService);
 
-app.get('*cordova*.js', function (req, res) {
-  const filePath = path.join(__dirname, 'platforms', getPlatform(req), 'platform_www' + req.url);
-  console.log(filePath);
-  res.sendFile(filePath);
-});
-
-function getPlatform(req) {
-  var userAgent = req.headers['user-agent'];
-
-  if (/mobile/i.test(userAgent) || /Android/.test(userAgent))
-    return 'android';
-  else
-    return 'browser';
-}
-
 app.get('*', function (req, res) {
   res.sendFile(__dirname + '/www/index.html');
 });
