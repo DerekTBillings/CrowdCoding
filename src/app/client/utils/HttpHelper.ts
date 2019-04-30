@@ -6,8 +6,8 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 const httpOptions = {headers: new HttpHeaders({ 'Content-Type':  'application/json'})};
 
-// const SERVICE_URL = 'http://localhost:4200';
-const SERVICE_URL = 'https://codesource.herokuapp.com';
+// const SERVICE_URL = 'https://codesource.herokuapp.com';
+const SERVICE_URL = '';
 
 @Injectable({
   providedIn: 'root'

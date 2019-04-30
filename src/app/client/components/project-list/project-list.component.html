@@ -1,4 +1,18 @@
 <div class="content">
+  <div class="col-md-12 form-group buttonContainer">
+    <div *ngIf="isLoggedIn">
+      <button type="button" class="btn btn-primary btn-sm" data-toggle="button" aria-pressed="false" autocomplete="off"
+              (click)="filterProjects($event)">
+        Show My Projects
+      </button>
+    </div>
+    <div *ngIf="isMobileDevice">
+      <button type="button" class="btn btn-primary btn-sm right" data-toggle="button" aria-pressed="false" autocomplete="off"
+              (click)="storeProjectsOffline($event)">
+        View Offline
+      </button>
+    </div>
+  </div>
   <div class="listWrapper">
     <div class="scrollBox" id="scrollBox" (scroll)="onScroll($event)">
       <div class="card col-md-12" *ngFor="let project of projects">

@@ -4,17 +4,9 @@ const ProjectDao = require('../dao/ProjectDao');
 const dao = new ProjectDao();
 
 router.get('/', (req, res) => {
-  let session = req.session;
-  let rowStart = req.query.rowStart;
-  let rowEnd = req.query.rowEnd;
+  const queryParams = prepareProjectQueryParams(req);
 
-  let userId = (!session) ? -1 : session.userId;
-  userId = (userId == undefined) ? -1 : userId;
-
-  rowStart = (rowStart) ? +rowStart : 0;
-  rowEnd = (rowEnd) ? +rowEnd : 50;
-
-  dao.getProjects(userId, rowStart, rowEnd, (errors, data) => {
+  dao.getProjects(queryParams, (errors, data) => {
     data.forEach(row => {
       row.tools = cleanupArray(row.tools);
       row.needs = cleanupArray(row.needs);
@@ -24,6 +16,27 @@ router.get('/', (req, res) => {
     res.send({projects: data});
   });
 });
+
+function prepareProjectQueryParams(req) {
+  let session = req.session;
+  let userId = (!session) ? -1 : session.userId;
+  userId = (userId == undefined) ? -1 : userId;
+
+  let rowStart = req.query.rowStart;
+  let rowEnd = req.query.rowEnd;
+  rowStart = (rowStart) ? + rowStart : 0;
+  rowEnd = (rowEnd) ? + rowEnd : 5;
+
+  //filter by a sql wildcard. A sql wildcard will effectively remove the filter
+  let filterByUser = req.query.filterByUser;
+
+  return {
+    userId: userId,
+    rowStart: rowStart,
+    rowEnd: rowEnd,
+    filterByUser: filterByUser
+  };
+}
 
 function cleanupArray(str) {
   if (str == undefined || str == '' || str == 'NULL') {

@@ -17,6 +17,19 @@ module.exports = {
     "group by p.project_id " +
     "limit ?, ?",
 
+  getFilteredProjects:
+    "select p.project_id as id, project_name as name, purpose, website, " +
+    " group_concat(distinct quote(tool) order by tool) as tools, " +
+    " group_concat(distinct quote(needs) order by needs) as needs, " +
+    " case when (user_id is null) then false else true end as applied " +
+    "from project p " +
+    " inner join project_supporters ps " +
+    "   on p.project_id = ps.project_id and ps.user_id = ? " +
+    " left outer join project_tools pt on p.project_id = pt.project_id " +
+    " left outer join project_needs pn on p.project_id = pn.project_id " +
+    "group by p.project_id " +
+    "limit ?, ?",
+
   addProject: "insert into project(project_name, purpose, website) values (?, ?, ?)",
 
   getProjectId:

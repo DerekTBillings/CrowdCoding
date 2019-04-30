@@ -4,11 +4,15 @@
   margin: auto;
 }
 
-div.card {
-  margin-top: 10px;
+div.card, .buttonContainer {
+  margin-top: 10px !important;
 }
 
 .listWrapper {
+  height: 80%;
+}
+
+.listWrapper, .buttonContainer {
   width: 90%;
   overflow: auto;
   margin: auto;

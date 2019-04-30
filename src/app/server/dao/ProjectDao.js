@@ -7,8 +7,29 @@ class RegistrationDao {
     this._baseDao = new BaseDao();
   }
 
-  getProjects(userId, rowStart, rowEnd, callback) {
-    const params = [userId, rowStart, rowEnd];
+  getProjects(queryParams, callback) {
+    const userId = queryParams.userId;
+    const filterByUser = queryParams.filterByUser;
+    const rowStart = queryParams.rowStart;
+    const rowEnd = queryParams.rowEnd;
+
+    if (filterByUser == 'true') {
+      this.getProjectsByUserId(userId, rowStart, rowEnd, callback);
+    } else {
+      this.getAllProjects(userId, rowStart, rowEnd, callback);
+    }
+  }
+
+  getAllProjects(userId, rowStart, rowEnd, callback) {
+    let params = [userId, rowStart, rowEnd];
+    let query = ProjectSql.getProjectsBase;
+
+    this._baseDao.query(ProjectSql.getProjects, callback, params);
+  }
+
+  getProjectsByUserId(userId, rowStart, rowEnd, callback) {
+    let params = [userId, userId, rowStart, rowEnd];
+    let query = ProjectSql.getFilteredProjects;
 
     this._baseDao.query(ProjectSql.getProjects, callback, params);
   }

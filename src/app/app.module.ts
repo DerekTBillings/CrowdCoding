@@ -29,7 +29,7 @@ const appRoutes: Routes = [
     LoginComponent,
     AboutComponent,
     RegisterComponent,
-    MenuComponent
+    MenuComponent,
   ],
   imports: [
     BrowserModule,
