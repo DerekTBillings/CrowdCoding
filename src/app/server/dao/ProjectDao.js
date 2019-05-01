@@ -31,6 +31,10 @@ class RegistrationDao {
     this._baseDao.query(ProjectSql.getProjectCount, callback);
   }
 
+  getUserProjectCount(userId, callback) {
+    this._baseDao.query(ProjectSql.getUserProjectCount, callback, [userId]);
+  }
+
   apply(userId, projectId, callback) {
     const params = [userId, projectId];
 

@@ -4,10 +4,14 @@ import {HttpHelper} from '../../utils/HttpHelper';
 import {Router} from '@angular/router';
 
 const PROJECT_SERVICE_URL = '/services/project';
-const PROJECT_COUNT_URL = PROJECT_SERVICE_URL + '/getProjectCount';
+const PROJECT_COUNT_URL = PROJECT_SERVICE_URL + '/getUserProjectCount';
 const PROJECT_APPLY_URL = PROJECT_SERVICE_URL + '/apply';
 
 const LOGGED_IN_SERVICE_URL = '/services/login/status';
+
+const PROJECTS_KEY = 'MY_PROJECTS';
+
+declare let window: any;
 
 @Component({
   selector: 'app-project-list',
@@ -22,16 +26,15 @@ export class ProjectListComponent implements OnInit {
   projects: Project[] = [];
   projectsPerPage = 5;
   currentPage = 0;
-  isMobileDevice: false;
-  isLoggedIn: false;
-
-  @Input() storeOfflineButton: HTMLButtonElement;
-  @Input() filterProjectsButton: HTMLButtonElement;
+  isMobileDevice: boolean;
+  isLoggedIn: boolean;
 
   constructor(private httpHelper: HttpHelper,
               private router: Router) { }
 
   ngOnInit() {
+    this.isMobileDevice = true;
+    this.isLoggedIn = false;
     this.filterByUser = false;
 
     this.loadProjects(2);
@@ -40,10 +43,17 @@ export class ProjectListComponent implements OnInit {
       this.isLoggedIn = res.isLoggedIn;
     });
 
-    document.addEventListener('deviceready', function() {
+    document.addEventListener('deviceready', () => {
       this.isMobileDevice = true;
+
+      document.addEventListener('offline', () => {
+        const storage = window.localStorage;
+        const serializedProjects = storage.getItem(PROJECTS_KEY);
+
+        JSON.parse(serializedProjects).forEach(project => this.projects.push(project));
     }, false);
 
+    }, false);
   }
 
   loadProjects(pages: number): void {
@@ -52,7 +62,7 @@ export class ProjectListComponent implements OnInit {
 
       const rowStart = (page - 1) * this.projectsPerPage;
       const rowEnd = rowStart + this.projectsPerPage;
-      const filterByUser = this.filterByUser;
+      const filterByUser = !this.filterByUser;
 
       const url = PROJECT_SERVICE_URL + `?rowStart=${rowStart}&rowEnd=${rowEnd}&filterByUser=${filterByUser}`;
 
@@ -118,6 +128,22 @@ export class ProjectListComponent implements OnInit {
   }
 
   storeProjectsOffline() {
-    // Do something
+    this.httpHelper.get(PROJECT_COUNT_URL).subscribe(countRes => {
+      const userProjects = countRes.projectCount;
+
+      const url = PROJECT_SERVICE_URL + `?rowStart=0&rowEnd=${userProjects}&filterByUser=true`;
+
+      this.httpHelper.get(url).subscribe(projectsRes => {
+        alert('hit');
+        const projects = projectsRes.projects;
+
+        const serializedProjects = JSON.stringify(projects);
+        alert(serializedProjects);
+
+        const storage = window.localStorage;
+        storage.setItem(PROJECTS_KEY, serializedProjects);
+      });
+    });
+
   }
 }

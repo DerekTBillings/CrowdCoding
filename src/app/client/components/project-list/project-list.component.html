@@ -1,13 +1,13 @@
 <div class="content">
   <div class="col-md-12 form-group buttonContainer">
-    <div *ngIf="isLoggedIn">
+    <div *ngIf="isLoggedIn" class="left">
       <input class="form-check-input" type="checkbox" id="filterByUser"
              (click)="filterProjects()" [(ngModel)]="filterByUser">
       <label class="form-check-label" for="filterByUser">
         Show My Projects
       </label>
     </div>
-    <div *ngIf="isMobileDevice">
+    <div *ngIf="isMobileDevice" class="right">
       <input class="form-check-input" type="checkbox" id="viewOffline"
              (click)="storeProjectsOffline()" [(ngModel)]="viewOffline">
       <label class="form-check-label" for="viewOffline">

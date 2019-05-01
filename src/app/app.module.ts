@@ -9,14 +9,12 @@ import {ProjectListComponent} from './client/components/project-list/project-lis
 import {LoginComponent} from './client/components/login/login.component';
 import {RegisterComponent} from './client/components/register/register.component';
 import {ProjectAddComponent} from './client/components/project-add/project-add.component';
-import {AboutComponent} from './client/components/about/about.component';
 import {MenuComponent} from './client/components/menu/menu.component';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: '/projects', pathMatch: 'full' },
   { path: 'projects', component: ProjectListComponent },
   { path: 'post', component: ProjectAddComponent },
-  { path: 'about', component: AboutComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent }
 ];
@@ -27,7 +25,6 @@ const appRoutes: Routes = [
     ProjectListComponent,
     ProjectAddComponent,
     LoginComponent,
-    AboutComponent,
     RegisterComponent,
     MenuComponent,
   ],

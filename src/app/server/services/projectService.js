@@ -53,6 +53,16 @@ router.get('/getProjectCount', (req, res) => {
   });
 });
 
+router.get('/getUserProjectCount', (req, res) => {
+  let session = req.session;
+  let userId = (!session) ? -1 : session.userId;
+  userId = (userId == undefined) ? -1 : userId;
+
+  dao.getUserProjectCount(userId, (errors, data) => {
+    res.send({projectCount: data[0]['count']});
+  });
+});
+
 router.post('/apply', (req, res) => {
   let session = req.session;
   let projectId = req.body.projectId;

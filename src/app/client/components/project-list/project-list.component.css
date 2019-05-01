@@ -25,6 +25,10 @@ li {
   float: right;
 }
 
+.left {
+  float: left;
+}
+
 .scrollBox {
   margin: auto;
   overflow: auto;

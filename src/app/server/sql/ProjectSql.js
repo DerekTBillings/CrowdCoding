@@ -2,6 +2,11 @@
 module.exports = {
   getProjectCount: 'select count(*) as count from project',
 
+  getUserProjectCount: 'select count(*) as count ' +
+    'from project p ' +
+    ' inner join project_supporters ps ' +
+    '  on p.project_id = ps.project_id and ps.user_id = ?',
+
   apply: 'insert into project_supporters(user_id, project_id) values (?, ?)',
 
   getProjects:
