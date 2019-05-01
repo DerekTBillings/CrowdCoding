@@ -1,16 +1,18 @@
 <div class="content">
   <div class="col-md-12 form-group buttonContainer">
     <div *ngIf="isLoggedIn">
-      <button type="button" class="btn btn-primary btn-sm" data-toggle="button" aria-pressed="false" autocomplete="off"
-              (click)="filterProjects($event)">
+      <input class="form-check-input" type="checkbox" id="filterByUser"
+             (click)="filterProjects()" [(ngModel)]="filterByUser">
+      <label class="form-check-label" for="filterByUser">
         Show My Projects
-      </button>
+      </label>
     </div>
     <div *ngIf="isMobileDevice">
-      <button type="button" class="btn btn-primary btn-sm right" data-toggle="button" aria-pressed="false" autocomplete="off"
-              (click)="storeProjectsOffline($event)">
+      <input class="form-check-input" type="checkbox" id="viewOffline"
+             (click)="storeProjectsOffline()" [(ngModel)]="viewOffline">
+      <label class="form-check-label" for="viewOffline">
         View Offline
-      </button>
+      </label>
     </div>
   </div>
   <div class="listWrapper">

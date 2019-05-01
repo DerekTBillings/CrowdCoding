@@ -22,7 +22,7 @@ export class MenuComponent implements OnInit {
   checkSignInStatus() {
     this.httpHelper.get(LOGGED_IN_SERVICE_URL).subscribe(res => {
       this.isSignedIn = res.isLoggedIn;
-      // setTimeout(() => this.checkSignInStatus(), 2000);
+      setTimeout(() => this.checkSignInStatus(), 2000);
     });
   }
 

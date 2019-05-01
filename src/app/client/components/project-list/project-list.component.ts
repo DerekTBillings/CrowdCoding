@@ -16,13 +16,14 @@ const LOGGED_IN_SERVICE_URL = '/services/login/status';
 })
 export class ProjectListComponent implements OnInit {
 
+  @Input() filterByUser: boolean;
+  @Input() viewOffline: boolean;
+
   projects: Project[] = [];
   projectsPerPage = 5;
   currentPage = 0;
   isMobileDevice: false;
   isLoggedIn: false;
-  filterByUser: boolean;
-  storeOffline: boolean;
 
   @Input() storeOfflineButton: HTMLButtonElement;
   @Input() filterProjectsButton: HTMLButtonElement;
@@ -31,6 +32,8 @@ export class ProjectListComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit() {
+    this.filterByUser = false;
+
     this.loadProjects(2);
 
     this.httpHelper.get(LOGGED_IN_SERVICE_URL).subscribe(res => {
@@ -48,7 +51,7 @@ export class ProjectListComponent implements OnInit {
       const page = ++this.currentPage;
 
       const rowStart = (page - 1) * this.projectsPerPage;
-      const rowEnd = page * this.projectsPerPage;
+      const rowEnd = rowStart + this.projectsPerPage;
       const filterByUser = this.filterByUser;
 
       const url = PROJECT_SERVICE_URL + `?rowStart=${rowStart}&rowEnd=${rowEnd}&filterByUser=${filterByUser}`;
@@ -102,32 +105,19 @@ export class ProjectListComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event?) {
     const screenHeight = window.innerHeight;
-    const targetHeight = screenHeight * 9 / 10;
+    const targetHeight = screenHeight * 8.5 / 10;
 
     const scrollBox = document.getElementById('scrollBox');
     scrollBox.style.height = targetHeight + 'px';
   }
 
-  filterProjects(event: Event) {
-    this.filterByUser = this.isEventCallerPressed(event);
-
+  filterProjects() {
     this.currentPage = 0;
     this.projects = [];
     this.loadProjects(2);
   }
 
-  isEventCallerPressed(event: Event) {
-    const target = this.getTarget(event);
-    console.log(target);
-
-    return target.attributes['aria-pressed'].nodeValue;
-  }
-
-  getTarget(event: Event): any {
-    return event.target || event.currentTarget;
-  }
-
-  storeProjectsOffline(event: Event) {
-    this.storeOffline = this.isEventCallerPressed(event);
+  storeProjectsOffline() {
+    // Do something
   }
 }

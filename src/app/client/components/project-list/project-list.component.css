@@ -9,12 +9,11 @@ div.card, .buttonContainer {
 }
 
 .listWrapper {
-  height: 80%;
+  overflow: auto;
 }
 
 .listWrapper, .buttonContainer {
   width: 90%;
-  overflow: auto;
   margin: auto;
 }
 

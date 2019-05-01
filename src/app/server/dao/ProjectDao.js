@@ -13,25 +13,18 @@ class RegistrationDao {
     const rowStart = queryParams.rowStart;
     const rowEnd = queryParams.rowEnd;
 
-    if (filterByUser == 'true') {
-      this.getProjectsByUserId(userId, rowStart, rowEnd, callback);
-    } else {
-      this.getAllProjects(userId, rowStart, rowEnd, callback);
-    }
-  }
-
-  getAllProjects(userId, rowStart, rowEnd, callback) {
     let params = [userId, rowStart, rowEnd];
-    let query = ProjectSql.getProjectsBase;
+    let query = this.getProjectQuery(filterByUser);
 
-    this._baseDao.query(ProjectSql.getProjects, callback, params);
+    this._baseDao.query(query, callback, params);
   }
 
-  getProjectsByUserId(userId, rowStart, rowEnd, callback) {
-    let params = [userId, userId, rowStart, rowEnd];
-    let query = ProjectSql.getFilteredProjects;
-
-    this._baseDao.query(ProjectSql.getProjects, callback, params);
+  getProjectQuery(filterByUser) {
+    if (filterByUser == 'true' || filterByUser == true) {
+      return ProjectSql.getFilteredProjects;
+    } else {
+      return ProjectSql.getProjects;
+    }
   }
 
   getProjectCount(callback) {

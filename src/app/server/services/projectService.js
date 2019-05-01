@@ -24,8 +24,8 @@ function prepareProjectQueryParams(req) {
 
   let rowStart = req.query.rowStart;
   let rowEnd = req.query.rowEnd;
-  rowStart = (rowStart) ? + rowStart : 0;
-  rowEnd = (rowEnd) ? + rowEnd : 5;
+  rowStart = (rowStart) ? +rowStart : 0;
+  rowEnd = (rowEnd) ? +rowEnd : 5;
 
   //filter by a sql wildcard. A sql wildcard will effectively remove the filter
   let filterByUser = req.query.filterByUser;

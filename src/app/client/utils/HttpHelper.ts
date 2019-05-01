@@ -4,10 +4,14 @@ import {Observable} from 'rxjs/internal/Observable';
 import {of} from 'rxjs/internal/observable/of';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 
-const httpOptions = {headers: new HttpHeaders({ 'Content-Type':  'application/json'})};
+const httpOptions = {headers: new HttpHeaders({
+    'Content-Type':  'application/json',
+    'Cache-Control': 'no-cache',
+    'Pragma': 'no-cache',
+})};
 
-// const SERVICE_URL = 'https://codesource.herokuapp.com';
-const SERVICE_URL = '';
+const SERVICE_URL = 'https://codesource.herokuapp.com';
+// const SERVICE_URL = '';
 
 @Injectable({
   providedIn: 'root'
