@@ -46,12 +46,15 @@ export class ProjectListComponent implements OnInit {
     document.addEventListener('deviceready', () => {
       this.isMobileDevice = true;
 
+      const storage2 = window.localStorage;
+      const serializedProjects2 = storage2.getItem(PROJECTS_KEY);
+
+      alert('hit:: ' + serializedProjects2);
+
       document.addEventListener('offline', () => {
         const storage = window.localStorage;
-        const serializedProjects = storage.getItem(PROJECTS_KEY);
-
-        JSON.parse(serializedProjects).forEach(project => this.projects.push(project));
-    }, false);
+        storage.getItem(PROJECTS_KEY).forEach(project => this.projects.push(project));
+      }, false);
 
     }, false);
   }
@@ -134,11 +137,8 @@ export class ProjectListComponent implements OnInit {
       const url = PROJECT_SERVICE_URL + `?rowStart=0&rowEnd=${userProjects}&filterByUser=true`;
 
       this.httpHelper.get(url).subscribe(projectsRes => {
-        alert('hit');
         const projects = projectsRes.projects;
-
         const serializedProjects = JSON.stringify(projects);
-        alert(serializedProjects);
 
         const storage = window.localStorage;
         storage.setItem(PROJECTS_KEY, serializedProjects);
