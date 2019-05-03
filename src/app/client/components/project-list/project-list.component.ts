@@ -28,14 +28,17 @@ export class ProjectListComponent implements OnInit {
   currentPage = 0;
   isMobileDevice: boolean;
   isLoggedIn: boolean;
+  localFilterToggle: boolean;
+  localOfflineToggle: boolean;
 
   constructor(private httpHelper: HttpHelper,
               private router: Router) { }
 
   ngOnInit() {
-    this.isMobileDevice = true;
+    this.isMobileDevice = false;
     this.isLoggedIn = false;
-    this.filterByUser = false;
+    this.localFilterToggle = false;
+    this.localOfflineToggle = false;
 
     this.loadProjects(2);
 
@@ -45,18 +48,25 @@ export class ProjectListComponent implements OnInit {
 
     document.addEventListener('deviceready', () => {
       this.isMobileDevice = true;
+      this.viewOffline = this.usesLocalStorage();
 
       const storage2 = window.localStorage;
-      const serializedProjects2 = storage2.getItem(PROJECTS_KEY);
-
-      alert('hit:: ' + serializedProjects2);
+      const storedProjects2 = storage2.getItem(PROJECTS_KEY);
+      this.projects = JSON.parse(storedProjects2);
 
       document.addEventListener('offline', () => {
+        alert('isOffline');
         const storage = window.localStorage;
-        storage.getItem(PROJECTS_KEY).forEach(project => this.projects.push(project));
+        const storedProjects = storage.getItem(PROJECTS_KEY);
+        this.projects = JSON.parse(storedProjects);
       }, false);
 
     }, false);
+  }
+
+  usesLocalStorage(): boolean {
+    const storage = window.localStorage;
+    return storage.getItem(PROJECTS_KEY) !== 'undefined';
   }
 
   loadProjects(pages: number): void {
@@ -65,9 +75,8 @@ export class ProjectListComponent implements OnInit {
 
       const rowStart = (page - 1) * this.projectsPerPage;
       const rowEnd = rowStart + this.projectsPerPage;
-      const filterByUser = !this.filterByUser;
 
-      const url = PROJECT_SERVICE_URL + `?rowStart=${rowStart}&rowEnd=${rowEnd}&filterByUser=${filterByUser}`;
+      const url = PROJECT_SERVICE_URL + `?rowStart=${rowStart}&rowEnd=${rowEnd}&filterByUser=${this.filterByUser}`;
 
       this.httpHelper.get(url).subscribe(res => {
         this.onResize();
@@ -125,25 +134,37 @@ export class ProjectListComponent implements OnInit {
   }
 
   filterProjects() {
+    this.localFilterToggle = !this.localFilterToggle;
+    this.filterByUser = this.localFilterToggle;
+
     this.currentPage = 0;
     this.projects = [];
     this.loadProjects(2);
   }
 
   storeProjectsOffline() {
-    this.httpHelper.get(PROJECT_COUNT_URL).subscribe(countRes => {
-      const userProjects = countRes.projectCount;
+    this.localOfflineToggle = !this.localOfflineToggle;
+    this.viewOffline = this.localOfflineToggle;
 
-      const url = PROJECT_SERVICE_URL + `?rowStart=0&rowEnd=${userProjects}&filterByUser=true`;
+    const storage = window.localStorage;
 
-      this.httpHelper.get(url).subscribe(projectsRes => {
-        const projects = projectsRes.projects;
-        const serializedProjects = JSON.stringify(projects);
+    if (!this.localOfflineToggle) {
+      storage.setItem(PROJECTS_KEY, 'undefined');
+    } else {
+      this.httpHelper.get(PROJECT_COUNT_URL).subscribe(countRes => {
+        const userProjects = countRes.projectCount;
 
-        const storage = window.localStorage;
-        storage.setItem(PROJECTS_KEY, serializedProjects);
+        const url = PROJECT_SERVICE_URL + `?rowStart=0&rowEnd=${userProjects}&filterByUser=true`;
+
+        this.httpHelper.get(url).subscribe(projectsRes => {
+          const projects = projectsRes.projects;
+          const serializedProjects = JSON.stringify(projects);
+
+          storage.setItem(PROJECTS_KEY, serializedProjects);
+        });
       });
-    });
-
+    }
   }
+
+
 }
